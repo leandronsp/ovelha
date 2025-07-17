@@ -24,9 +24,8 @@ Usage: make <target>
   docker.stats               Show docker stats
   docker.build               Build the docker image
   docker.push                Push the docker image
-  health.check               Check the stack is healthy
-  stress.it                  Run stress tests
-  ovelha                     Unleash the madness
+  stress.it                  Unleash the madness
+  ovelha                     A little test
 ```
 
 ## Inicializando a aplicação
@@ -41,7 +40,7 @@ $ make start.dev
 Health check da app:
 
 ```
-$ make health.check
+$ make summary # LOL
 ```
 
 ## Unleash the madness
