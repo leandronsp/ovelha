@@ -1,12 +1,18 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    connection_pool (2.5.3)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
+    redis-client (0.25.1)
+      connection_pool
 
 PLATFORMS
   aarch64-linux
   ruby
 
 DEPENDENCIES
+  redis
 
 BUNDLED WITH
    2.6.9

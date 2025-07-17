@@ -1,3 +1,5 @@
+$stdout.sync = true
+
 require 'socket'
 require_relative 'app/handler'
 

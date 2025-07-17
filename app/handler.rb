@@ -1,4 +1,8 @@
 require 'json'
+require 'net/http'
+require 'uri'
+
+require_relative 'store'
 
 class Handler 
   VALIDATION_ERRORS = [].freeze
@@ -22,10 +26,9 @@ class Handler
       if (line = @client.gets)
         message += line
 
-        headline_regex = /^(GET|POST)\s\/clientes\/(\d+)\/(.*?)\sHTTP.*?$/
-        verb, id, action = line.match(headline_regex).captures
-        params['id'] = id
-        request = "#{verb} /clientes/:id/#{action}"
+        headline_regex = /^(GET|POST)\s+([^\s]+)\s+HTTP.*?$/
+        verb, path = line.match(headline_regex).captures
+        request = "#{verb} #{path}"
       end
 
       puts "\n[#{Time.now}] #{message}"
@@ -53,9 +56,33 @@ class Handler
       body = '{}'
 
       case request
-      in "GET /clientes/:id/extrato"
-        body = { message: "Extrato do cliente #{params['id']}" }.to_json
+        in "POST /payments"
+          uri = URI("http://payment-processor-default:8080/payments")
+
+          payload = {
+            correlationId: params['correlationId'],
+            amount: params['amount'],
+            requestedAt: Time.now.utc.iso8601(3)
+          }
+
+          http = Net::HTTP.new(uri.host, uri.port)
+          req = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
+          req.body = payload.to_json
+          res = http.request(req)
+
+          if res.is_a?(Net::HTTPSuccess)
+            Store.new.save(processor: 'default', amount: params['amount'])
+            status = 200
+            body = { message: 'processed' }.to_json
+          else
+            status = res.code.to_i
+            body = { error: 'failed to process payment' }.to_json
+          end
+      in "GET /payments-summary"
+        summary = Store.new.summary
+
         status = 200
+        body = summary.to_json
       else 
         status = 404
       end
