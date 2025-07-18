@@ -3,6 +3,7 @@ require 'net/http'
 require 'uri'
 
 require_relative 'store'
+require_relative 'payment_job'
 
 class Handler 
   VALIDATION_ERRORS = [].freeze
@@ -57,27 +58,13 @@ class Handler
 
       case request
         in "POST /payments"
-          uri = URI("http://payment-processor-default:8080/payments")
+          PaymentJob.new.enqueue(
+            correlation_id: params['correlationId'],
+            amount: params['amount']
+          )
 
-          payload = {
-            correlationId: params['correlationId'],
-            amount: params['amount'],
-            requestedAt: Time.now.utc.iso8601(3)
-          }
-
-          http = Net::HTTP.new(uri.host, uri.port)
-          req = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
-          req.body = payload.to_json
-          res = http.request(req)
-
-          if res.is_a?(Net::HTTPSuccess)
-            Store.new.save(processor: 'default', amount: params['amount'])
-            status = 200
-            body = { message: 'processed' }.to_json
-          else
-            status = res.code.to_i
-            body = { error: 'failed to process payment' }.to_json
-          end
+          status = 200
+          body = { message: 'enqueued' }.to_json
       in "GET /payments-summary"
         summary = Store.new.summary
 

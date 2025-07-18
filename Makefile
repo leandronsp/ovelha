@@ -27,6 +27,9 @@ api.setup: ## Set up the API service
 start.dev: ## Start the development environment
 	@docker compose up -d nginx
 
+api.bash:
+	@docker compose run --rm api01 bash
+
 docker.stats: ## Show docker stats
 	@docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}"
 
