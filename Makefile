@@ -59,3 +59,9 @@ rinha: ## Run k6 performance test (Rinha de Backend)
 rinha.official: ## Run official Rinha test with scoring
 	@./scripts/reset.sh
 	@./scripts/run-local-test.sh
+
+docker.build: ## Build the docker image
+	@docker build -t leandronsp/ovelha --target prod --platform linux/amd64 .
+
+docker.push: ## Push the docker image
+	@docker push leandronsp/ovelha

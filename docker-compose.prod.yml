@@ -1,16 +1,6 @@
 services:
-  rust:
-    build:
-      context: .
-      target: base
-    volumes:
-      - .:/app
-      - cargodeps:/usr/local/cargo
-
   api01: &api
-    build:
-      context: .
-      target: prod
+    image: leandronsp/ovelha
     container_name: api01
     hostname: api01
     command: api
@@ -39,9 +29,6 @@ services:
     container_name: worker
     hostname: worker
     command: worker
-    depends_on:
-      redis:
-        condition: service_healthy
     environment:
       - WORKER_REDIS_POOL_SIZE=10
       - WORKER_THREAD_POOL_SIZE=10
