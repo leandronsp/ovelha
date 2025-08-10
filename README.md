@@ -57,7 +57,7 @@ make compose.down
 make rinha
 ```
 
-<img width="402" height="563" alt="Screenshot 2025-08-06 at 21 16 50" src="https://github.com/user-attachments/assets/5894bd04-c8a2-419e-ab5a-8efc3de529fc" />
+<img width="380" height="561" alt="Screenshot 2025-08-08 at 19 34 02" src="https://github.com/user-attachments/assets/cff932bd-0f65-4fa6-95f4-1631c6bbb809" />
 
 
 > Até que Rust escala, né?
